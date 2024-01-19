@@ -1,43 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList } from 'react-native';
 
 const LiveChatScreen = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [lastReply, setLastReply] = useState('');
+
+  useEffect(() => {
+    if (lastReply !== '') {
+      setMessages([...messages, { id: messages.length.toString(), text: lastReply, isUser: false }]);
+      setLastReply(''); 
+    }
+  }, [lastReply, messages]);
 
   const handleSend = () => {
     if (newMessage.trim() === '') {
       return;
     }
 
-    
-    setMessages([...messages, { id: messages.length.toString(), text: newMessage }]);
+    setMessages([...messages, { id: messages.length.toString(), text: newMessage, isUser: true }]);
 
-  
     handleSpecialWords(newMessage);
 
-    
     setNewMessage('');
   };
 
   const handleSpecialWords = (message) => {
     const lowerCaseMessage = message.toLowerCase();
 
-   
     if (lowerCaseMessage.includes('hello')) {
       replyToMessage('Hi there! How can I help you?');
     } else if (lowerCaseMessage.includes('goodbye')) {
       replyToMessage('Goodbye! Have a great day!');
     } else if (lowerCaseMessage.includes('how are you')) {
       replyToMessage('I am just a computer program, but thank you for asking!');
+    } else if (lowerCaseMessage.includes('where is my package')) {
+      replyToMessage('Your package is currently on its way. Please allow some time for delivery.');
     } else {
-      
     }
   };
 
   const replyToMessage = (reply) => {
- 
-    setMessages([...messages, { id: messages.length.toString(), text: reply }]);
+    setLastReply(reply);
   };
 
   return (
@@ -47,7 +51,7 @@ const LiveChatScreen = () => {
         data={messages}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.messageContainer}>
+          <View style={[styles.messageContainer, item.isUser ? styles.userMessage : styles.replyMessage]}>
             <Text style={styles.messageText}>{item.text}</Text>
           </View>
         )}
@@ -78,12 +82,18 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   messageContainer: {
-    backgroundColor: '#3498db',
     borderRadius: 10,
     padding: 10,
     marginBottom: 10,
     maxWidth: '80%',
+  },
+  userMessage: {
+    backgroundColor: '#3498db',
     alignSelf: 'flex-end',
+  },
+  replyMessage: {
+    backgroundColor: '#2ecc71',
+    alignSelf: 'flex-start',
   },
   messageText: {
     color: '#fff',

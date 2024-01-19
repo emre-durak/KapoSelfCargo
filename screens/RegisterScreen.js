@@ -5,12 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 const RegisterScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState();
-
   const navigation = useNavigation();
 
   const handleRegister = () => {
-
-    navigation.navigate('Home'); 
+    navigation.navigate('Home');
   };
 
   return (
@@ -21,13 +19,12 @@ const RegisterScreen = () => {
           style={styles.logo}
         />
       </View>
-      <Text style={styles.title}>Register</Text>
       <TextInput
         style={styles.input}
         placeholder="Username"
         value={username}
         onChangeText={(text) => setUsername(text)}
-        placeholderTextColor="white" 
+        placeholderTextColor="white"
       />
       <TextInput
         style={styles.input}
@@ -35,7 +32,7 @@ const RegisterScreen = () => {
         secureTextEntry
         value={password}
         onChangeText={(text) => setPassword(text)}
-        placeholderTextColor="white" 
+        placeholderTextColor="white"
       />
       <TouchableOpacity
         style={[styles.button, { backgroundColor: '#3498db' }]}
@@ -53,16 +50,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 50,
-    backgroundColor: 'black', 
+    backgroundColor: 'black',
   },
   logoContainer: {
     marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: 'white', 
+    marginTop: 20,
   },
   input: {
     width: '80%',
@@ -72,7 +64,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     borderRadius: 10,
-    color: 'white', 
+    color: 'white',
   },
   logo: {
     width: 300,

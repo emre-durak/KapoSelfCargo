@@ -45,7 +45,7 @@ const HomeScreen = ({ navigation }) => {
           style={styles.logo}
         />
       </View>
-      <Text style={styles.title}>KapoSelf Cargo</Text>
+      {}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}

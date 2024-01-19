@@ -7,7 +7,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = () => {
     if (username === 'emre' && password === '123') {
-      navigation.navigate('Home'); 
+      navigation.navigate('DashboardScreen');
     } else {
       alert('Incorrect username or password');
     }
@@ -22,13 +22,12 @@ const LoginScreen = ({ navigation }) => {
       <View style={styles.logoContainer}>
         <Image source={require('../assets/logo.png')} style={styles.logo} />
       </View>
-      <Text style={styles.title}>KapoSelf Cargo</Text>
       <TextInput
         style={styles.input}
         placeholder="Username"
         value={username}
         onChangeText={(text) => setUsername(text)}
-        placeholderTextColor="white" 
+        placeholderTextColor="white"
       />
       <TextInput
         style={styles.input}
@@ -36,19 +35,19 @@ const LoginScreen = ({ navigation }) => {
         secureTextEntry
         value={password}
         onChangeText={(text) => setPassword(text)}
-        placeholderTextColor="white" 
+        placeholderTextColor="white"
       />
       <TouchableOpacity
         style={[styles.button, { backgroundColor: '#FFC0CB' }]}
         onPress={handleLogin}
       >
-        <Text style={{ color: 'white', textAlign: 'center' }}>Login</Text>
+        <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.button, { backgroundColor: '#3498db' }]}
         onPress={handleRegister}
       >
-        <Text style={{ color: 'white', textAlign: 'center' }}>Register</Text>
+        <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
     </View>
   );
@@ -60,16 +59,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 50,
-    backgroundColor: 'black', 
+    backgroundColor: 'black',
   },
   logoContainer: {
     marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: 'white', 
   },
   input: {
     width: '80%',
@@ -79,7 +72,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     borderRadius: 10,
-    color: 'white', 
+    color: 'white',
   },
   logo: {
     width: 300,
@@ -91,6 +84,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     marginBottom: 10,
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
   },
 });
 

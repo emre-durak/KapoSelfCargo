@@ -1,39 +1,54 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Image, Dimensions } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Image, Dimensions, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = () => {
   const [trackingNumber, setTrackingNumber] = useState('');
+  const navigation = useNavigation();
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      
     }, 10000);
 
     return () => clearInterval(intervalId);
   }, []);
 
-  const handleTrackCargo = () => {
-    const mockCargoData = {
-      trackingNumber: 'ABC123',
-      orderDate: '2024-01-14',
-      paymentMethod: 'Credit Card',
-      departureDate: '2024-01-15',
-      estimatedDeliveryDate: '2024-01-20',
-    };
+  const handleTrackCargo = async () => {
+    try {
+      const userToken = await AsyncStorage.getItem('userToken');
 
-    if (trackingNumber === mockCargoData.trackingNumber) {
-      
-      navigation.navigate('CargoDetails', {
-        trackingNumber: mockCargoData.trackingNumber,
-        orderDate: mockCargoData.orderDate,
-        paymentMethod: mockCargoData.paymentMethod,
-        departureDate: mockCargoData.departureDate,
-        estimatedDeliveryDate: mockCargoData.estimatedDeliveryDate,
+      const response = await axios.get(`http://kaposelfcargo.somee.com/api/Shipment/SearchShipment?trackingNumber=${trackingNumber}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`
+        }
       });
-    } else {
-      alert('Cargo tracking number not found');
+
+      const data = response.data;
+
+      if (data.responseCode === 200) {
+        const cargoData = data.data[0];
+        navigation.navigate('CargoDetails', {
+          trackingNumber: cargoData.trackingNumber,
+          sender: cargoData.sender,
+          recipient: cargoData.recipient,
+          shippingCompany: cargoData.shippingCompany,
+          shipmentStatus: cargoData.shipmentStatus,
+          shipmentDate: cargoData.shipmentDate,
+          estimatedDeliveryDate: cargoData.estimatedDeliveryDate,
+          deliveryDate: cargoData.deliveryDate,
+          totalCost: cargoData.totalCost,
+        });
+      } else {
+        Alert.alert('Error', data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'An error occurred while fetching cargo data.');
     }
   };
 
@@ -45,7 +60,6 @@ const HomeScreen = ({ navigation }) => {
           style={styles.logo}
         />
       </View>
-      {}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -74,12 +88,6 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     marginBottom: height * 0.02,
-  },
-  title: {
-    fontSize: width * 0.08,
-    fontWeight: 'bold',
-    marginBottom: height * 0.04,
-    color: 'white', 
   },
   inputContainer: {
     width: width * 0.8,

@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -8,19 +10,37 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const CargoDetailsScreen = ({ route, navigation }) => {
-  const { trackingNumber, orderDate, paymentMethod, departureDate, estimatedDeliveryDate } = route.params;
 
   const randomLatitude = 37.5 + Math.random() * 0.5;
   const randomLongitude = -122 + Math.random() * 0.5;
 
-  const detailsData = [
-    { label: 'Order Number:', value: trackingNumber },
-    { label: 'Order Date:', value: orderDate },
-    { label: 'Payment Method:', value: paymentMethod },
-    { label: 'Departure Date:', value: departureDate },
-    { label: 'Estimated Delivery Date:', value: estimatedDeliveryDate },
-  ];
+  const [detailsData,setDetailsData]=useState([]);
+  const handleTrackCargo = async () => {
+    try {
+      const userToken = await AsyncStorage.getItem('userToken');
 
+      const response = await axios.get(`http://kaposelfcargo.somee.com/api/Shipment/SearchShipment?trackingNumber=${trackingNumber}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`
+        }
+      });
+      
+
+      console.log(response.data);
+
+      const data = response.data;
+
+      if (data.responseCode === 200) {
+        setDetailsData(response.data.data);
+      } else {
+        Alert.alert('Error', data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'An error occurred while fetching cargo data.');
+    }
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Cargo Details</Text>

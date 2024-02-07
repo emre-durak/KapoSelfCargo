@@ -1,17 +1,33 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
-const LoginScreen = ({ navigation }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState();
+const LoginScreen = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigation = useNavigation();
 
-  const handleLogin = () => {
-    if (username === 'emre' && password === '123') {
-      navigation.navigate('DashboardScreen');
-    } else {
-      alert('Incorrect username or password');
+  const handleLogin=async()=>{
+    const response=await axios.post('http://kaposelfcargo.somee.com/api/Auth/login',{
+      email:email,
+      password:password, returnSecureToken:true
+    },{
+      headers: {
+        'Content-Type': 'application/json',
+      },
     }
-  };
+  );
+  if (response.data.responseCode==200){
+    await AsyncStorage.setItem('userToken',response.data.data);
+    navigation.navigate('DashboardScreen');
+    alert(response.data.message);
+  }
+  else{
+    alert(response.data.message);
+  }
+  }
 
   const handleRegister = () => {
     navigation.navigate('Register');
@@ -24,9 +40,9 @@ const LoginScreen = ({ navigation }) => {
       </View>
       <TextInput
         style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={(text) => setUsername(text)}
+        placeholder="Email"
+        value={email}
+        onChangeText={(text) => setEmail(text)}
         placeholderTextColor="white"
       />
       <TextInput
@@ -39,7 +55,7 @@ const LoginScreen = ({ navigation }) => {
       />
       <TouchableOpacity
         style={[styles.button, { backgroundColor: '#FFC0CB' }]}
-        onPress={handleLogin}
+        onPress={() => handleLogin()}
       >
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>

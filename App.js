@@ -9,6 +9,7 @@ import RegisterScreen from './screens/RegisterScreen';
 import DashboardScreen from './screens/DashboardScreen';
 import NewCourierRequestScreen from './screens/NewCourierRequestScreen';
 import ArchiveScreen from './screens/ArchiveScreen';
+import AddShipment from './screens/AddShipment'; 
 
 const Stack = createStackNavigator();
 
@@ -119,6 +120,20 @@ const App = () => {
           component={ArchiveScreen}
           options={{
             title: 'Archive',
+            headerStyle: {
+              backgroundColor: 'black',
+            },
+            headerTintColor: 'white',
+            headerTitleStyle: {
+              textAlign: 'left',
+            },
+          }}
+        />
+        <Stack.Screen
+          name="AddShipment"
+          component={AddShipment}
+          options={{
+            title: 'Add Shipment',
             headerStyle: {
               backgroundColor: 'black',
             },

@@ -1,14 +1,36 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const RegisterScreen = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState();
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
-  const handleRegister = () => {
-    navigation.navigate('Home');
+  const handleRegister = async () => {
+    try {
+      const response = await fetch('http://kaposelfcargo.somee.com/api/Auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName: fullName,
+          email: email,
+          password: password,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Registration failed');
+      }
+
+      navigation.navigate('DashboardScreen');
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Registration failed. Please try again later.');
+    }
   };
 
   return (
@@ -21,10 +43,18 @@ const RegisterScreen = () => {
       </View>
       <TextInput
         style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={(text) => setUsername(text)}
+        placeholder="Full Name"
+        value={fullName}
+        onChangeText={(text) => setFullName(text)}
         placeholderTextColor="white"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={(text) => setEmail(text)}
+        placeholderTextColor="white"
+        keyboardType="email-address"
       />
       <TextInput
         style={styles.input}

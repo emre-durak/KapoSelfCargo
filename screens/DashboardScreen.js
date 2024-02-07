@@ -13,6 +13,8 @@ const DashboardScreen = () => {
       navigation.navigate('NewCourierRequest');
     } else if (buttonText === 'Arşiv') {
       navigation.navigate('ArchiveScreen'); 
+    } else if (buttonText === 'Kargo Ekle') { 
+      navigation.navigate('AddShipment'); 
     } else {
       alert(`Button "${buttonText}" pressed!`);
     }
@@ -44,6 +46,15 @@ const DashboardScreen = () => {
         <FontAwesome name="archive" size={24} color="white" />
         <Text style={styles.buttonText}>Archive</Text>
       </TouchableOpacity>
+      {}
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => handleButtonPress('Kargo Ekle')}
+      >
+        <FontAwesome name="plus" size={24} color="white" />
+        <Text style={styles.buttonText}>Add Shipment</Text>
+      </TouchableOpacity>
+      {}
     </View>
   );
 };
